@@ -11,8 +11,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import Alert from "@material-ui/lab/Alert";
 import axios from "axios";
 
+
 import Link from "@material-ui/core/Link";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Navigate,useHistory  } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,12 +50,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Login = () => {
+
+  const currentUser = JSON.parse(localStorage.getItem("user"));
   const classes = useStyles();
   const history = useNavigate();
+  // let history = useHistory();
 
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [message, setMessage] = React.useState(null);
+
+
 
   const verifyUser = () => {
     if (username.length === 0 || password.length === 0) {
@@ -68,8 +74,10 @@ export const Login = () => {
       })
       .then((response) => {
         console.log(response.data.accessToken);
-        window.localStorage.setItem("key", response.data.accessToken);
-        history("/dashboard");
+        window.localStorage.setItem("user", JSON.stringify(response.data))
+
+        history("/");
+        // redirect();
       })
       .catch((error) => {
         console.log(error);
@@ -78,68 +86,73 @@ export const Login = () => {
       });
   };
   return (
-    <Grid container component="main" className={classes.root}>
-      <CssBaseline />
-      <Grid item xs={false} sm={4} md={7} className={classes.image} />
-      <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-        <div className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <React.Fragment>
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="usename"
-              name="username"
-              value={username}
-              onChange={(event) => {
-                setUsername(event.target.value);
-              }}
-            />
-            <TextField
-              variant="outlined"
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              value={password}
-              onChange={(event) => {
-                setPassword(event.target.value);
-              }}
-            />
-            {message ? <Alert severity="error">{message}</Alert> : null}
-            <Button
-              type="button"
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={verifyUser}
-              autoFocus
-            >
-              Sign In
-            </Button>
-          </React.Fragment>
-          <Grid container>
-            <Grid item xs></Grid>
-            <Grid item>
-              <Link href="/signup" variant="body2">
-                {"Don't have an account? Sign Up"}
-              </Link>
+      <div>
+      {currentUser ? ( <Navigate to={"/"}></Navigate>
+            ): (
+            <Grid container component="main" className={classes.root}>
+              <CssBaseline />
+              <Grid item xs={false} sm={4} md={7} className={classes.image} />
+              <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+                <div className={classes.paper}>
+                  <Avatar className={classes.avatar}>
+                    <LockOutlinedIcon />
+                  </Avatar>
+                  <Typography component="h1" variant="h5">
+                    Sign in
+                  </Typography>
+                  <React.Fragment>
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      required
+                      fullWidth
+                      id="email"
+                      label="usename"
+                      name="username"
+                      value={username}
+                      onChange={(event) => {
+                        setUsername(event.target.value);
+                      }}
+                    />
+                    <TextField
+                      variant="outlined"
+                      margin="normal"
+                      required
+                      fullWidth
+                      name="password"
+                      label="Password"
+                      type="password"
+                      id="password"
+                      value={password}
+                      onChange={(event) => {
+                        setPassword(event.target.value);
+                      }}
+                    />
+                    {message ? <Alert severity="error">{message}</Alert> : null}
+                    <Button
+                      type="button"
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      className={classes.submit}
+                      onClick={verifyUser}
+                      autoFocus
+                    >
+                      Sign In
+                    </Button>
+                  </React.Fragment>
+                  <Grid container>
+                    <Grid item xs></Grid>
+                    <Grid item>
+                      <Link href="/signup" variant="body2">
+                        {"Don't have an account? Sign Up"}
+                      </Link>
+                    </Grid>
+                  </Grid>
+                </div>
+              </Grid>
             </Grid>
-          </Grid>
-        </div>
-      </Grid>
-    </Grid>
+        )}
+      </div>
   );
 };

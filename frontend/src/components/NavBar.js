@@ -1,20 +1,36 @@
-import React from "react";
-import { Navbar } from "react-bootstrap";
+import React, {useState,useEffect} from 'react';
+import {Dropdown, Navbar} from "react-bootstrap";
 import { Container, Nav } from "react-bootstrap";
 import { NavDropdown } from "react-bootstrap";
 import { Form } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import { FormControl } from "react-bootstrap";
 import home from "../images/home-bg.jpg";
-import { Link } from "react-router-dom";
+import {Link, Navigate} from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 export const NavBar = () => {
+
+  const [currentUser, setCurrentUser] = useState(undefined);
+  useEffect( ()=>{
+     const user = JSON.parse(localStorage.getItem("user"));
+     if(user){
+       setCurrentUser(user);
+     }
+
+  },[]);
+
+  const logOut = () => {
+    localStorage.removeItem("user");
+    setCurrentUser(undefined);
+    return <Navigate  to='/' />
+  };
   return (
     <>
       <Navbar bg="dark" expand="lg">
         <Container fluid>
-          <Navbar.Brand href="#" style={{ color: "white" }}>
+          <Navbar.Brand href="/" style={{ color: "white" }}>
             Why should You Read
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
@@ -33,22 +49,41 @@ export const NavBar = () => {
               />
               <Button variant="outline-success">Search</Button>
             </Form>
-            <Link to="/login">
-              <Button variant="outline-success" style={{ margin: "5px" }}>
-                Login
-              </Button>
-            </Link>
-            <Link to="/signup">
-              <Button variant="outline-success" style={{ margin: "5px" }}>
-                Signup
-              </Button>
-            </Link>
+
+            {  currentUser ? (
+                <div>
+                  <Dropdown style={{ marginLeft: "10px" }}>
+                    <Dropdown.Toggle variant="success" id="dropdown-basic">
+                      <PersonOutlineIcon style={{ color: "white" }} />
+
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Dropdown.Item href="#/action-1">Profile</Dropdown.Item>
+                      <Dropdown.Item onClick={logOut}>Logout</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+
+                </div>
+              ) : (
+
+                <div>
+                <Link to="/login">
+                  <Button variant="outline-success" style={{ margin: "5px" }}>
+                    Login
+                  </Button>
+                </Link>
+                <Link to="/signup">
+                  <Button variant="outline-success" style={{ margin: "5px" }}>
+                  Signup
+                  </Button>
+                </Link>
+                </div>
+              )}
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <div margin="100px">
-        <img src={home} height="600px" width="100%" />
-      </div>
+
     </>
   );
 };

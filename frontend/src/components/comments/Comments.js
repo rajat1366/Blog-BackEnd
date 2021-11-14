@@ -4,11 +4,11 @@ import { Button, Comment, Form, Header, Message } from "semantic-ui-react";
 import axios from "axios";
 import EditComment from "./EditComment";
 
-export const Comments = (rating_id) => {
-  const user = localStorage.getItem("key");
-  console.log(user);
+export const Comments = (article_id) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   const initialCommentState = {
-    article_id: rating_id.rating_id,
+    article_id: article_id.article_id,
     description: "",
   };
   const [showComments, SetShowComments] = useState([]);
@@ -27,13 +27,13 @@ export const Comments = (rating_id) => {
   ];
   const retrieveComments = () => {
     let params = {};
-    params["rating_id"] = rating_id.rating_id;
+    params["article_id"] = article_id.article_id;
     console.log(params);
     axios({
       method: "get",
-      url: "/api/comment/" + params.rating_id,
+      url: "/api/comment/" + params.article_id,
       headers: {
-        Authorization: `Bearer ${window.localStorage.getItem("key")}`,
+        Authorization: `Bearer ${user.accessToken}`,
       },
     })
       .then((response) => {
@@ -50,14 +50,15 @@ export const Comments = (rating_id) => {
   const handleForm = (e) => {
     setMessage("");
     setSuccessful(false);
-    console.log(comment);
+    console.log(user.id);
+    console.log(user.accessToken);
 
     axios({
       method: "post",
       url: "/api/comment/add",
       data: comment,
       headers: {
-        Authorization: `Bearer ${window.localStorage.getItem("key")}`,
+        Authorization: `Bearer ${user.accessToken}`,
       },
     }).then(
       (response) => {
@@ -90,14 +91,15 @@ export const Comments = (rating_id) => {
   };
   return (
     <div>
+      <br></br>
       <Comment.Group className={"container"}>
         <Header as="h3" dividing>
           Comments
         </Header>
         {showComments &&
           showComments.map((item) => (
-            <Comment key={item.articleId}>
-              <Comment.Avatar src={userIcons[item.articleId % 4]} />
+            <Comment key={item.id}>
+              <Comment.Avatar src={userIcons[item.id % 4]} />
               <Comment.Content>
                 <Comment.Author as="a">{item.userName}</Comment.Author>
                 <Comment.Text>{item.description}</Comment.Text>

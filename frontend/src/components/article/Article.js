@@ -9,7 +9,7 @@ import Typography from "@material-ui/core/Typography";
 import TableFooter from "@material-ui/core/TableFooter";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import TableHead from "@material-ui/core/TableHead";
+
 import Paper from "@material-ui/core/Paper";
 import IconButton from "@material-ui/core/IconButton";
 import FirstPageIcon from "@material-ui/icons/FirstPage";
@@ -18,9 +18,11 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import Axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import {Card , Container,Button } from "react-bootstrap";
+
 import { AppBar, Toolbar } from "@material-ui/core";
-import { Button } from "react-bootstrap";
-import { ViewNot } from "./ViewNot";
+
+import { ViewNot } from "../ViewNot";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -142,9 +144,14 @@ export const Article = () => {
 
   return (
     <div>
+        <Link to={"/addArticle/"}>
+            <Button>Add Article</Button>
+        </Link>
+
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="custom pagination table">
-          <TableBody>
+
+            <TableBody>
             {(rowsPerPage > 0
               ? articles.slice(
                   page * rowsPerPage,
@@ -152,21 +159,36 @@ export const Article = () => {
                 )
               : articles
             ).map((article) => (
-              <TableRow height="200px">
-                <TableCell
-                  padding="5px"
-                  component="th"
-                  scope="row"
-                  style={{ fontSize: 20 }}
-                >
-                  {article.description}
-                  <br></br>
-                  <br></br>
-                  <Link to={"/ViewNot/" + article.id}>
-                    <Button>Read More</Button>
-                  </Link>
-                </TableCell>
-              </TableRow>
+                <div key={article.id} style={{display: 'flex', flexDirection: 'row',margin:'2em'}}>
+                <Card border="primary" style={{ width: '100%' }}>
+                    <Card.Header>{article.title}</Card.Header>
+                    <Card.Body>
+                        {/*<Card.Title>Primary Card Title</Card.Title>*/}
+                        <Card.Text>
+                            {article.description.slice(0,250)}
+                        </Card.Text>
+                            <Link to={"/article/" + article.id}>
+                              <Button>Read More</Button>
+                             </Link>
+                    </Card.Body>
+                </Card>
+                </div>
+
+              // <TableRow height="200px">
+              //   <TableCell
+              //     padding="5px"
+              //     component="th"
+              //     scope="row"
+              //     style={{ fontSize: 20 }}
+              //   >
+              //     {article.description}
+              //     <br></br>
+              //     <br></br>
+              //     <Link to={"/ViewNot/" + article.id}>
+              //       <Button>Read More</Button>
+              //     </Link>
+              //   </TableCell>
+              // </TableRow>
             ))}
 
             {emptyRows > 0 && (
@@ -175,6 +197,7 @@ export const Article = () => {
               </TableRow>
             )}
           </TableBody>
+
           <TableFooter>
             <TableRow>
               <TablePagination
@@ -195,6 +218,7 @@ export const Article = () => {
           </TableFooter>
         </Table>
       </TableContainer>
+
     </div>
   );
 };
