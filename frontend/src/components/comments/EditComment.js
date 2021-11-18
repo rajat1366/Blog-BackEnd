@@ -21,16 +21,16 @@ const EditComment = ({
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
   const [comment, setComment] = useState({});
+
   const getComment = () => {
     let params = {};
+    const user = JSON.parse(localStorage.getItem("user"));
     params["comment_id"] = comment_id;
     console.log(params);
     axios({
       method: "get",
       url: "/api/comment/FromId" + params.comment_id,
-      headers: {
-        Authorization: `Bearer ${window.localStorage.getItem("key")}`,
-      },
+
     })
       .then((response) => {
         setComment(response.data);

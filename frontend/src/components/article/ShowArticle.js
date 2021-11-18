@@ -69,8 +69,8 @@ const ShowArticle = props => {
                         </div>
                     </div>
 
-
-                    <p> {article.description}</p>
+                    <div dangerouslySetInnerHTML={{ __html: article.description }} />
+                    {/*<p> {article.description}</p>*/}
                 </div>
                 <div>
                     <Comments article_id={id} />

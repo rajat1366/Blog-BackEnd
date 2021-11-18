@@ -23,6 +23,7 @@ import {Card , Container,Button } from "react-bootstrap";
 import { AppBar, Toolbar } from "@material-ui/core";
 
 import { ViewNot } from "../ViewNot";
+import EditComment from "../comments/EditComment";
 
 const useStyles1 = makeStyles((theme) => ({
   root: {
@@ -108,8 +109,10 @@ const useStyles2 = makeStyles({
 });
 
 export const Article = () => {
-  const history = useNavigate();
-  const [articles, setArticle] = useState([]);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const history = useNavigate();
+    const [articles, setArticle] = useState([]);
 
   useEffect(() => {
     Axios({
@@ -144,9 +147,16 @@ export const Article = () => {
 
   return (
     <div>
-        <Link to={"/addArticle/"}>
-            <Button>Add Article</Button>
-        </Link>
+        {user ? (
+
+            <Link to={"/addArticle/"}>
+                <br></br>
+                <Button>Add Article</Button>
+            </Link>
+        ) : (
+            ""
+        )}
+
 
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="custom pagination table">
@@ -165,7 +175,8 @@ export const Article = () => {
                     <Card.Body>
                         {/*<Card.Title>Primary Card Title</Card.Title>*/}
                         <Card.Text>
-                            {article.description.slice(0,250)}
+                            <div dangerouslySetInnerHTML={{ __html: article.description.slice(0,250) }} />
+                            {/*{article.description.slice(0,250)}*/}
                         </Card.Text>
                             <Link to={"/article/" + article.id}>
                               <Button>Read More</Button>

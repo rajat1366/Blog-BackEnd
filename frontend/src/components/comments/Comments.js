@@ -32,9 +32,7 @@ export const Comments = (article_id) => {
     axios({
       method: "get",
       url: "/api/comment/" + params.article_id,
-      headers: {
-        Authorization: `Bearer ${user.accessToken}`,
-      },
+
     })
       .then((response) => {
         SetShowComments(response.data);

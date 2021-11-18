@@ -13,7 +13,7 @@ import Alert from "@material-ui/lab/Alert";
 import axios from "axios";
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
-import { useNavigate } from "react-router-dom";
+import {Navigate, useNavigate} from "react-router-dom";
 
 function BetterAlert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -45,7 +45,7 @@ export const Signup = (props) => {
   const [username, setUserName] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [role, setRole] = React.useState("user");
+  const [role, setRole] = React.useState(["user"]);
   const [message, setMessage] = React.useState(null);
   const [snackbar, setSnackbar] = React.useState(false);
   const history = useNavigate();
@@ -57,7 +57,7 @@ export const Signup = (props) => {
       return;
     }
     axios
-      .post("/api/auth/signup", {
+      .post("/api/auth/register", {
         username: username,
         name: name,
         email: email,
@@ -66,23 +66,21 @@ export const Signup = (props) => {
       })
       .then((response) => {
         setSnackbar(true);
+        console.log(response);
       })
       .catch((error) => {
-        console.log(error);
+
+        console.log(error.response.data.message);
         setMessage(
-          "Oh, looks like someone has already registered with this Username. Please sign in"
+          error.response.data.message
         );
         return;
       });
   };
 
   const handleCloseSnackBar = () => {
-    setSnackbar(false);
-    setTimeout(
-      function () {
-        history.replace("/login");
-      }.bind(this, 2000)
-    );
+    setSnackbar(true);
+
   };
 
   const nameHandler = (event) => {
@@ -149,7 +147,7 @@ export const Signup = (props) => {
                 required
                 fullWidth
                 id="email"
-                value={username}
+                value={email}
                 label="email"
                 name="email"
                 onChange={emailHandler}
