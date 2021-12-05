@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import "../../css/popup.css";
 import axios from "axios";
+import ReactQuill from "react-quill";
 
 import {
   Button,
@@ -12,27 +13,32 @@ import {
   Label,
 } from "reactstrap";
 
-const EditComment = ({
-  comment_id,
+export const EditArticle = ({
+  article_id,
   trigger,
   setTrigger,
-  updateCommentList,
+  updateAricleList,
 }) => {
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState("");
-  const [comment, setComment] = useState({});
+  const [article, setArticle] = useState({});
   const user = JSON.parse(localStorage.getItem("user"));
-  const getComment = () => {
+
+  function handleChange(value) {
+    setArticle({ ...article, description: value });
+  }
+
+  const getArticle = () => {
     let params = {};
 
-    params["comment_id"] = comment_id;
+    params["article_id"] = article_id;
     console.log(params);
     axios({
       method: "get",
-      url: "/api/comment/FromId/" + params.comment_id,
+      url: "/api/article/" + params.article_id,
     })
       .then((response) => {
-        setComment(response.data);
+        setArticle(response.data);
         console.log(response.data);
       })
       .catch((e) => {
@@ -41,15 +47,14 @@ const EditComment = ({
   };
   useEffect(() => {
     if (trigger === true) {
-      getComment();
+      getArticle();
     }
   }, [trigger]);
   const handleForm = (e) => {
     setMessage("");
     setSuccessful(false);
-
     axios
-      .put("/api/comment/update/", comment, {
+      .put("/api/article/update/" + article_id, article, {
         headers: {
           Authorization: `Bearer ${user.accessToken}`,
         },
@@ -58,7 +63,7 @@ const EditComment = ({
         (response) => {
           setMessage(response.data.message);
           setSuccessful(true);
-          updateCommentList();
+          updateAricleList();
         },
         (error) => {
           const resMessage =
@@ -93,32 +98,23 @@ const EditComment = ({
               <span aria-hidden="true">&times;</span>
             </button>
             <Fragment>
-              <h3 className={"text-center my-3"}> Edit your Comment</h3>
-              {comment.id && (
+              <h3 className={"text-center my-3"}> Edit your Article</h3>
+              {article.id && (
                 <Form onSubmit={handleForm}>
                   {!successful && (
                     <div>
                       <FormGroup>
-                        <Label for={"description"}>Comment Description</Label>
-                        <Input
-                          type={"textarea"}
-                          id={"description"}
-                          placeholder={"Enter the review description"}
-                          style={{ height: 75 }}
-                          value={comment.description}
+                        <Label for={"description"}>Article Description</Label>
+                        <ReactQuill
+                          value={article.description}
                           required
-                          onChange={(e) => {
-                            setComment({
-                              ...comment,
-                              description: e.target.value,
-                            });
-                          }}
+                          onChange={handleChange}
                         />
                       </FormGroup>
 
                       <Container className={"text-center"}>
                         <Button type="submit" color={"success"}>
-                          Edit Comment
+                          Edit Article
                         </Button>
                       </Container>
                     </div>
@@ -148,4 +144,4 @@ const EditComment = ({
     ""
   );
 };
-export default EditComment;
+// export default EditArticle;

@@ -18,7 +18,7 @@ import KeyboardArrowRight from "@material-ui/icons/KeyboardArrowRight";
 import LastPageIcon from "@material-ui/icons/LastPage";
 import Axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import {Card , Container,Button } from "react-bootstrap";
+import { Card, Container, Button } from "react-bootstrap";
 
 import { AppBar, Toolbar } from "@material-ui/core";
 
@@ -109,10 +109,35 @@ const useStyles2 = makeStyles({
 });
 
 export const Article = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const history = useNavigate();
+  const [articles, setArticle] = useState([]);
+  const [search, setSearch] = useState("");
+  const params = {
+    page: 0,
+    size: 5,
+    searchData: [search],
+  };
+  const onChangeSearchData = (e) => {
+    const searchData = e.target.value;
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const history = useNavigate();
-    const [articles, setArticle] = useState([]);
+    setSearch(searchData);
+  };
+  const retrieveStartups = () => {
+    params.searchData = search;
+    console.log(params);
+    Axios.get("/api/article/", { params })
+      .then((response) => {
+        const { content, totalPages } = response.data;
+        console.log("in here");
+
+        console.log(content);
+        setArticle(content);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
 
   useEffect(() => {
     Axios({
@@ -128,7 +153,6 @@ export const Article = () => {
       }
     );
   }, []);
-  console.log(articles);
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -147,21 +171,39 @@ export const Article = () => {
 
   return (
     <div>
-        {user ? (
-
-            <Link to={"/addArticle/"}>
-                <br></br>
-                <Button>Add Article</Button>
-            </Link>
-        ) : (
-            ""
-        )}
-
+      <br></br>
+      <div className="row">
+        <div className="col-sm-4">
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search Article"
+            value={search}
+            onChange={onChangeSearchData}
+          />
+        </div>
+        <div className="col-sm-4">
+          <button
+            className="btn btn-outline-secondary"
+            type="button"
+            onClick={retrieveStartups}
+          >
+            Search
+          </button>
+        </div>
+      </div>
+      {user ? (
+        <Link to={"/addArticle/"}>
+          <br></br>
+          <Button>Add Article</Button>
+        </Link>
+      ) : (
+        ""
+      )}
 
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="custom pagination table">
-
-            <TableBody>
+          <TableBody>
             {(rowsPerPage > 0
               ? articles.slice(
                   page * rowsPerPage,
@@ -169,21 +211,28 @@ export const Article = () => {
                 )
               : articles
             ).map((article) => (
-                <div key={article.id} style={{display: 'flex', flexDirection: 'row',margin:'2em'}}>
-                <Card border="primary" style={{ width: '100%' }}>
-                    <Card.Header>{article.title}</Card.Header>
-                    <Card.Body>
-                        {/*<Card.Title>Primary Card Title</Card.Title>*/}
-                        <Card.Text>
-                            <div dangerouslySetInnerHTML={{ __html: article.description.slice(0,250) }} />
-                            {/*{article.description.slice(0,250)}*/}
-                        </Card.Text>
-                            <Link to={"/article/" + article.id}>
-                              <Button>Read More</Button>
-                             </Link>
-                    </Card.Body>
+              <div
+                key={article.id}
+                style={{ display: "flex", flexDirection: "row", margin: "2em" }}
+              >
+                <Card border="primary" style={{ width: "100%" }}>
+                  <Card.Header>{article.title}</Card.Header>
+                  <Card.Body>
+                    {/*<Card.Title>Primary Card Title</Card.Title>*/}
+                    <Card.Text>
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: article.description.slice(0, 250),
+                        }}
+                      />
+                      {/*{article.description.slice(0,250)}*/}
+                    </Card.Text>
+                    <Link to={"/article/" + article.id}>
+                      <Button>Read More</Button>
+                    </Link>
+                  </Card.Body>
                 </Card>
-                </div>
+              </div>
 
               // <TableRow height="200px">
               //   <TableCell
@@ -229,7 +278,6 @@ export const Article = () => {
           </TableFooter>
         </Table>
       </TableContainer>
-
     </div>
   );
 };
