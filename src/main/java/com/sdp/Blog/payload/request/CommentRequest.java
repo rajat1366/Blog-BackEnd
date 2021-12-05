@@ -1,8 +1,10 @@
 package com.sdp.Blog.payload.request;
 
+import com.sdp.Blog.payload.LengthStrategy;
+
 import javax.validation.constraints.NotBlank;
 
-public class CommentRequest {
+public class CommentRequest implements LengthStrategy {
     @NotBlank
     private String article_id;
     @NotBlank
@@ -27,5 +29,11 @@ public class CommentRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public Boolean checkLength() {
+        if(this.description.length() < 500) return true;
+        else return false;
     }
 }

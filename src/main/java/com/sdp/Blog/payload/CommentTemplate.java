@@ -1,4 +1,2 @@
-package com.sdp.Blog.payload;
-
-public class CommentTemplate {
+package com.sdp.Blog.payload;public class CommentTemplate {
 }

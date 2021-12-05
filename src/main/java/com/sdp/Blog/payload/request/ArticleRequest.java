@@ -1,8 +1,10 @@
 package com.sdp.Blog.payload.request;
 
+import com.sdp.Blog.payload.LengthStrategy;
+
 import javax.validation.constraints.NotBlank;
 
-public class ArticleRequest {
+public class ArticleRequest implements LengthStrategy {
     @NotBlank
     private String title;
 
@@ -27,4 +29,9 @@ public class ArticleRequest {
         this.description = description;
     }
 
+    @Override
+    public Boolean checkLength() {
+        if(this.description.length() < 2000) return true;
+        else return false;
+    }
 }

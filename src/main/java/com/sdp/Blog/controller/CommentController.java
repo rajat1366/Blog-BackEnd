@@ -74,6 +74,9 @@ public class CommentController {
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> saveComment(@Valid @RequestBody CommentRequest commentRequest) {
          try{
+            if(!commentRequest.checkLength()){
+                return ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to add comment!! Length is greater than 500  "));
+            }
             UserDetailsImpl userDetails =
                     (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             User user = userService.findById(userDetails.getId()).orElseThrow(() -> new RuntimeException("Error: User is not found."));

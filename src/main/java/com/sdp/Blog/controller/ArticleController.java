@@ -71,7 +71,8 @@ public class ArticleController {
     public ResponseEntity<?> getArticlebyId(@PathVariable("id") long id ){
         Optional<Article> article = articleService.getArticlesById(id);
         if(article.isPresent()){
-            return ResponseEntity.ok(article.get());
+            ArticleResponse articleResponse = new ArticleResponse(article.get(),article.get().getUser().getId(),article.get().getUser().getUsername());
+            return ResponseEntity.ok(articleResponse);
         } else {
             logger.error("[NO RECORD FOUND] - Article info does not exist");
             return ResponseEntity
@@ -94,7 +95,7 @@ public class ArticleController {
             for(Comment com : comments) {
                 commentService.deleteById(com.getId());
             }
-            
+
             articleService.deleteById(id);
             logger.info("[RECORD DELETED] - Article deleted successfully");
             return ResponseEntity.ok(new MessageResponse("Article details deleted successfully!"));
@@ -108,7 +109,9 @@ public class ArticleController {
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> saveArticle(@Valid @RequestBody ArticleRequest articleRequest) {
         try {
-
+            if(!articleRequest.checkLength()){
+                return ResponseEntity.badRequest().body(new MessageResponse("Error: Unable to add new Article! Blog length should be less than 2000"));
+            }
             UserDetailsImpl userDetails =
                     (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
