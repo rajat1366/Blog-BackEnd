@@ -25,4 +25,7 @@ public class CommentService {
         return commentRepository.getAllCommentsByArticle(article_id);
     }
 
+    public void deleteById(long id) {
+        commentRepository.deleteById(id);
+    }
 }

@@ -1,6 +1,7 @@
 package com.sdp.Blog.controller;
 
 import com.sdp.Blog.model.Article;
+import com.sdp.Blog.model.Comment;
 import com.sdp.Blog.model.User;
 import com.sdp.Blog.payload.request.ArticleRequest;
 import com.sdp.Blog.payload.response.ArticleResponse;
@@ -8,6 +9,7 @@ import com.sdp.Blog.payload.response.MessageResponse;
 import com.sdp.Blog.payload.response.PagingResponse;
 import com.sdp.Blog.security.services.UserDetailsImpl;
 import com.sdp.Blog.service.ArticleService;
+import com.sdp.Blog.service.CommentService;
 import com.sdp.Blog.service.UserService;
 
 import org.apache.logging.log4j.LogManager;
@@ -40,6 +42,9 @@ public class ArticleController {
 
     @Autowired
     ArticleService articleService;
+
+    @Autowired
+    CommentService commentService;
 
     @GetMapping("/")
     public ResponseEntity<?>getArticles(@RequestParam(required = false) String searchData,@RequestParam(defaultValue = "0") int page,
@@ -85,6 +90,11 @@ public class ArticleController {
     @PreAuthorize("hasRole('MODERATOR') or hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<?> deleteArticle(@PathVariable("id") long id) {
         try {
+            List<Comment> comments = commentService.getAllComments(id);
+            for(Comment com : comments) {
+                commentService.deleteById(com.getId());
+            }
+            
             articleService.deleteById(id);
             logger.info("[RECORD DELETED] - Article deleted successfully");
             return ResponseEntity.ok(new MessageResponse("Article details deleted successfully!"));
