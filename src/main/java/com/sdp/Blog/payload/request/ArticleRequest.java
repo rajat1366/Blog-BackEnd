@@ -31,7 +31,7 @@ public class ArticleRequest implements LengthStrategy {
 
     @Override
     public Boolean checkLength() {
-        if(this.description.length() < 2000) return true;
+        if(this.description.length() < 5000) return true;
         else return false;
     }
 }

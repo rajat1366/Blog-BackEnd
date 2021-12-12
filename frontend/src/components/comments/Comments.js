@@ -103,7 +103,7 @@ export const Comments = (article_id) => {
                 <Comment.Text>{item.description}</Comment.Text>
                 <Comment.Actions>
                   {/*<Comment.Action>Reply</Comment.Action>*/}
-                  {user != undefined && user.id === item.userId ? (
+                  {user != undefined && ( user.id === item.userId || user.roles.includes("ROLE_ADMIN"))? (
                     <Comment.Action>
                       <Button
                         size="small"

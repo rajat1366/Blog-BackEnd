@@ -222,7 +222,7 @@ export const Article = () => {
                     <Card.Text>
                       <div
                         dangerouslySetInnerHTML={{
-                          __html: article.description.slice(0, 250),
+                          __html: article.description.slice(0, 1000),
                         }}
                       />
                       {/*{article.description.slice(0,250)}*/}

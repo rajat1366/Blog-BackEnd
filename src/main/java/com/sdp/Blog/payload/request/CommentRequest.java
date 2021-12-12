@@ -33,7 +33,7 @@ public class CommentRequest implements LengthStrategy {
 
     @Override
     public Boolean checkLength() {
-        if(this.description.length() < 500) return true;
+        if(this.description.length() < 1000) return true;
         else return false;
     }
 }

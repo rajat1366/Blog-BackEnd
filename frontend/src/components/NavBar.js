@@ -62,21 +62,21 @@ export const NavBar = () => {
               style={{ maxHeight: "100px" }}
               navbarScroll
             ></Nav>
-            <Form className="d-flex">
-              <FormControl
-                type="search"
-                placeholder="Search"
-                id="search"
-                className="me-2"
-                onChange={(e) => {
-                  setSearch({ ...search, search: e.target.value });
-                }}
-                aria-label="Search"
-              />
-              <Button variant="outline-success" onClick={handleSubmit}>
-                Search
-              </Button>
-            </Form>
+            {/*<Form className="d-flex">*/}
+            {/*  <FormControl*/}
+            {/*    type="search"*/}
+            {/*    placeholder="Search"*/}
+            {/*    id="search"*/}
+            {/*    className="me-2"*/}
+            {/*    onChange={(e) => {*/}
+            {/*      setSearch({ ...search, search: e.target.value });*/}
+            {/*    }}*/}
+            {/*    aria-label="Search"*/}
+            {/*  />*/}
+            {/*  <Button variant="outline-success" onClick={handleSubmit}>*/}
+            {/*    Search*/}
+            {/*  </Button>*/}
+            {/*</Form>*/}
 
             {currentUser ? (
               <div>

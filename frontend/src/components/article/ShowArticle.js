@@ -77,7 +77,7 @@ const ShowArticle = (props) => {
           <div dangerouslySetInnerHTML={{ __html: article.description }} />
           {/*<p> {article.description}</p>*/}
         </div>
-        {user != undefined && user.id === article.userId ? (
+        {user != undefined && (user.id === article.userId  || user.roles.includes("ROLE_ADMIN") )  ? (
           <Button
             size="small"
             value={article.userId}
